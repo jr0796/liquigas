@@ -28,6 +28,14 @@ def buscador(event):
     bairro.set(bairrobuscador)
     cidade.set(cidadebuscador)
     txtnumero.focus_set()
+    #Vídeo com exemplo do uso de eventos
+    #documentação com os principais eventos: https://python-course.eu/tkinter/events-and-binds-in-tkinter.php
+
+def cancelarSair():
+    resp = messagebox.askyesno("Cancelar e sair", 'Deseja realmente sair?')
+    if resp == True:
+        master.destroy()
+
 
 
 #Nome
@@ -66,12 +74,12 @@ txtnumero.place(width=60, height=25, x=395, y=218)
 #Bairro
 bairro = tkinter.StringVar()
 txtBairro = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT,textvariable=bairro)
-txtBairro.place(width=205, height=25, x=15, y=278)
+txtBairro.place(width=285, height=25, x=15, y=278)
 
 #Cidade
 cidade = tkinter.StringVar()
 txtCidade = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT,textvariable=cidade)
-txtCidade.place(width=205, height=25, x=250, y=278)
+txtCidade.place(width=150, height=25, x=306, y=278)
 
 #Complemento
 txtComplemento = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
@@ -110,7 +118,7 @@ btnConfirmar.pack(side ='top')
 btnConfirmar.place(width=160, height=45, x=300, y=545)
 
 #botão Cancelar
-btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command="master")
+btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command=cancelarSair)
 btnCancelar.pack(side ='top')
 btnCancelar.place(width=160, height=45, x=130, y=545)
 
@@ -133,7 +141,7 @@ lblNum = Label(master,text= "Nº: ",font = "Calibri, 11",).place(x=395, y=195)
 #Label Bairro
 lblBairro = Label(master,text= "Bairro: ",font = "Calibri, 11",).place(x=15, y=255)
 #Label Cidade
-lblCidade = Label(master,text= "Cidade: ",font = "Calibri, 11",).place(x=250, y=255)
+lblCidade = Label(master,text= "Cidade: ",font = "Calibri, 11",).place(x=306, y=255)
 #Label Complemento
 lblComplemento = Label(master,text= "Complemento: ",font = "Calibri, 11",).place(x=15, y=315)
 #Label Telefone
