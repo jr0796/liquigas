@@ -6,7 +6,7 @@ from tkinter import messagebox
 
 #Construção da Janela
 master = Tk()
-master.title("..:: Cadastro de Fornecedores::..")
+master.title("..:: Cadastro de Fabricantes::..")
 #master.iconbitmap(default=" ")
 master.geometry("480x600+400+50") #Largura x Altura + dist. Esquerda + dist. do topo
 
@@ -108,7 +108,7 @@ btnConfirmar.pack(side ='top')
 btnConfirmar.place(width=160, height=45, x=300, y=545)
 
 #botão Cancelar
-btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command="cancelarSair")
+btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command=cancelarSair)
 btnCancelar.pack(side ='top')
 btnCancelar.place(width=160, height=45, x=130, y=545)
 

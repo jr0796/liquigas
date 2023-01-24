@@ -1,14 +1,15 @@
-import tkinter
 import requests
+import tkinter
 from tkinter import *
 from tkinter import messagebox
 
 
 #Construção da Janela
 master = Tk()
-master.title("..:: Cadastro de Fornecedores::..")
+master.title("..:: Cadastro de Entregadores::..")
 #master.iconbitmap(default=" ")
-master.geometry("480x600+400+50") #Largura x Altura + dist. Esquerda + dist. do topo
+master.geometry("480x600+400+0") #Largura x Altura + dist. Esquerda + dist. direita
+
 
 def buscador(event):
     # cep = '08490000'
@@ -27,6 +28,8 @@ def buscador(event):
     bairro.set(bairrobuscador)
     cidade.set(cidadebuscador)
     txtnumero.focus_set()
+    #Vídeo com exemplo do uso de eventos
+    #documentação com os principais eventos: https://python-course.eu/tkinter/events-and-binds-in-tkinter.php
 
 def cancelarSair():
     resp = messagebox.askyesno("Cancelar e sair", 'Deseja realmente sair?')
@@ -34,17 +37,18 @@ def cancelarSair():
         master.destroy()
 
 
+
 #Nome
 txtNome = Entry(master, bd=2, font=("Calibri, "), justify=LEFT)
 txtNome.place(width=440, height=25, x=15, y=38)
 
-#Cnpj
-txtCnpj = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
-txtCnpj.place(width=205, height=25, x=15, y=88)
+#RG
+txtRg = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtRg.place(width=205, height=25, x=15, y=88)
 
-#Contado da empresa - Nome de alguma pessoa para contato.
-txtContato = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
-txtContato.place(width=205, height=25, x=250, y=88)
+#CPF
+txtCpf = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtCpf.place(width=205, height=25, x=250, y=88)
 
 #CEP
 txtCep = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
@@ -89,7 +93,13 @@ txtTelefone.place(width=205, height=25, x=15, y=398)
 txtCaixaTelefones = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
 txtCaixaTelefones.place(width=205, height=75, x=15, y=438)
 
-
+#Foto
+txtFoto = Entry(master, bd=1, font=("Calibri, 12"), justify=LEFT)
+txtFoto.place(width=110, height=115, x=345, y=372)
+#botão Add Foto
+btnAddFoto = Button(master, text='Add Foto',font=("Calibri, 12"), command="")
+btnAddFoto.pack(side ='top')
+btnAddFoto.place(width=110, height=25, x=345, y=490)
 
 
 #botão Add Fone
@@ -108,7 +118,7 @@ btnConfirmar.pack(side ='top')
 btnConfirmar.place(width=160, height=45, x=300, y=545)
 
 #botão Cancelar
-btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command="cancelarSair")
+btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command=cancelarSair)
 btnCancelar.pack(side ='top')
 btnCancelar.place(width=160, height=45, x=130, y=545)
 
@@ -117,9 +127,9 @@ btnCancelar.place(width=160, height=45, x=130, y=545)
 lblTelefone = Label(master,text= "Nome: ",font = "Calibri, 11",).place(x=15, y=15)
 
 #Label RG
-lblcnpj = Label(master,text= "CNPJ: ",font = "Calibri, 11",).place(x=15, y=65)
+lblRg = Label(master,text= "RG: ",font = "Calibri, 11",).place(x=15, y=65)
 #Label CPF
-lblContato = Label(master,text= "Contato: ",font = "Calibri, 11",).place(x=250, y=65)
+lblCpf = Label(master,text= "CPF: ",font = "Calibri, 11",).place(x=250, y=65)
 #Label Cep
 lblCep = Label(master,text= "CEP: ",font = "Calibri, 11",).place(x=15, y=135)
 #Label Estado
@@ -136,8 +146,8 @@ lblCidade = Label(master,text= "Cidade: ",font = "Calibri, 11",).place(x=306, y=
 lblComplemento = Label(master,text= "Complemento: ",font = "Calibri, 11",).place(x=15, y=315)
 #Label Telefone
 lblTelefone = Label(master,text= "Telefone: ",font = "Calibri, 11",).place(x=15, y=375)
-
-
-
+#Label Foto
+lblFoto = Label(master,text= "Foto: ",font = "Calibri, 11",).place(x=345, y=349)
 
 master.mainloop()
+
