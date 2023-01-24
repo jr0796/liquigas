@@ -27,8 +27,8 @@ oframe = Frame(master,width=490, height= 260,bg="white" ).place(x=10,y=20)
 #Label Nome do Veículo ou Identificação
 lblNomeVeic = Label(master,text= "Nome do veículo: ",font = "Calibri, 11",bg="white").place(x=15, y=35)
 #Nome do Veículo ou Identificação
-txtNome = Entry(master, bd=2, font=("Calibri, "), justify=LEFT)
-txtNome.place(width=440, height=25, x=15, y=55)
+txtNome = Entry(master, bd=2, font=("Calibri,12 "), justify=LEFT)
+txtNome.place(width=455, height=25, x=15, y=55)
 
 
 #Label Nome do proprietário
@@ -36,10 +36,14 @@ lblNomeProprietario = Label(master,text= "Proprietário: ",font = "Calibri, 11",
 # combo Proprietário
 campoSelect = TK.StringVar()
 #master = novaMidia
-comboProprietario = ttk.Combobox(master, width=69, textvariable=(campoSelect))
+comboProprietario = ttk.Combobox(master, width=62, textvariable=(campoSelect))
 comboProprietario.place(x=20, y=110)
 comboProprietario['values'] = " "
 #comboProprietario.current(0)
+#botão Confirmar
+btnAddProprietario = Button(master, text='+',font=("Calibri, 14"), command=" ")
+btnAddProprietario.pack(side ='top')
+btnAddProprietario.place(width=50, height=30, x=420, y=105)
 
 #Label Nome do Fabricante
 lblFabricante = Label(master,text= "Fabricante: ",font = "Calibri, 11",bg="white").place(x=20, y=140)
