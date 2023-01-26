@@ -117,18 +117,6 @@ lblDataRegistro  = Label(master,text= "Data de Registro:",font = "Calibri, 11").
 anoFabri = DateEntry(master, selectmode='year',font=("Calibri,12")).place(x=290,y=360, width=150,height=25)
 
 
-"""
-import tkinter  as tk 
-from tkcalendar import DateEntry
-my_w = tk.Tk()
-my_w.geometry("340x220")  
-
-cal=DateEntry(my_w,selectmode='day')
-cal.grid(row=1,column=1,padx=15)
-my_w.mainloop()
-"""
-
-
 lblPlaca = Label(master,text= "Placa:",font = "Calibri, 11").place(x=20, y=340)
 #Quilometragem
 txtPlaca = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
