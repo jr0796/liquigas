@@ -8,7 +8,7 @@ from tkinter.filedialog import askopenfilename
 
 #Construção da Janela
 master = Tk()
-master.title("..:: Cadastro de Funcionários::..")
+master.title("..:: Cadastro de Clientes::..")
 #master.iconbitmap(default=" ")
 master.geometry("480x600+400+0") #Largura x Altura + dist. Esquerda + dist. direita
 
@@ -38,8 +38,7 @@ def cancelarSair():
     if resp == True:
         master.destroy()
 
-def addFoto():
-    filename = askopenfilename()  # Isto te permite selecionar um arquivo
+
 
 #Nome
 txtNome = Entry(master, bd=2, font=("Calibri, "), justify=LEFT)
@@ -96,19 +95,6 @@ txtTelefone.place(width=205, height=25, x=15, y=398)
 txtCaixaTelefones = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
 txtCaixaTelefones.place(width=205, height=75, x=15, y=438)
 
-#Foto
-
-foto = Image.open("C:/Users/anton/Desktop/Gerenciando-Imagens-no-SQL/Simpatia.jpg")
-foto = foto.resize((100, 100), Image.ANTIALIAS)
-test = ImageTk.PhotoImage(foto)
-label = Label(master, image=test,width=110, height=115).place(x=345, y=372)
-
-
-#botão Add Foto
-btnAddFoto = Button(master, text='Add Foto',font=("Calibri, 12"), command=addFoto)
-btnAddFoto.pack(side ='top')
-btnAddFoto.place(width=110, height=25, x=345, y=490)
-
 
 #botão Add Fone
 btnAddFone = Button(master, text='+',font=("Calibri, 15"), command="")
@@ -154,8 +140,7 @@ lblCidade = Label(master,text= "Cidade: ",font = "Calibri, 11",).place(x=306, y=
 lblComplemento = Label(master,text= "Complemento: ",font = "Calibri, 11",).place(x=15, y=315)
 #Label Telefone
 lblTelefone = Label(master,text= "Telefone: ",font = "Calibri, 11",).place(x=15, y=375)
-#Label Foto
-lblFoto = Label(master,text= "Foto: ",font = "Calibri, 11",).place(x=345, y=349)
+
 
 master.mainloop()
 

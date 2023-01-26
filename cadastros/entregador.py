@@ -2,7 +2,8 @@ import requests
 import tkinter
 from tkinter import *
 from tkinter import messagebox
-
+from PIL import ImageTk, Image
+from tkinter.filedialog import askopenfilename
 
 #Construção da Janela
 master = Tk()
@@ -36,7 +37,8 @@ def cancelarSair():
     if resp == True:
         master.destroy()
 
-
+def addFoto():
+    filename = askopenfilename()  # Isto te permite selecionar um arquivo
 
 #Nome
 txtNome = Entry(master, bd=2, font=("Calibri, "), justify=LEFT)
@@ -94,10 +96,16 @@ txtCaixaTelefones = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
 txtCaixaTelefones.place(width=205, height=75, x=15, y=438)
 
 #Foto
-txtFoto = Entry(master, bd=1, font=("Calibri, 12"), justify=LEFT)
-txtFoto.place(width=110, height=115, x=345, y=372)
+
+foto = Image.open("C:/Users/anton/Desktop/Gerenciando-Imagens-no-SQL/Simpatia.jpg")
+foto = foto.resize((100, 100), Image.ANTIALIAS)
+test = ImageTk.PhotoImage(foto)
+label = Label(master, image=test,width=110, height=115).place(x=345, y=372)
+
+
+
 #botão Add Foto
-btnAddFoto = Button(master, text='Add Foto',font=("Calibri, 12"), command="")
+btnAddFoto = Button(master, text='Add Foto',font=("Calibri, 12"), command=addFoto)
 btnAddFoto.pack(side ='top')
 btnAddFoto.place(width=110, height=25, x=345, y=490)
 
