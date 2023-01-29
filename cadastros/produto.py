@@ -9,7 +9,7 @@ from tkinter import messagebox, ttk
 master = Tk()
 master.title("..:: Cadastro de Fabricantes::..")
 #master.iconbitmap(default=" ")
-master.geometry("580x620+400+00") #Largura x Altura + dist. Esquerda + dist. do topo
+master.geometry("510x630+400+00") #Largura x Altura + dist. Esquerda + dist. do topo
 
 def buscador(event):
     # cep = '08490000'
@@ -83,7 +83,7 @@ btnAddFabricante.place(width=50, height=30, x=440, y=226)
 
 
 
-#Label Cidade
+#Label Fornecedor
 lblFornecedor = Label(master,text= "Fornecedor: ",font = "Calibri, 11",).place(x=15, y=270)
 
 #Fornecedor
@@ -98,27 +98,28 @@ btnAddFornecedor = Button(master, text='+',font=("Calibri, 14"), command=" ")
 btnAddFornecedor.pack(side ='top')
 btnAddFornecedor.place(width=50, height=30, x=440, y=290)
 
-
 #Label Qauntidade
 lblQuantidade = Label(master,text= "Quantidade: ",font = "Calibri, 11",).place(x=15, y=328)
+
+"""
 #combo Quantidada
 campoSelect = TK.StringVar()
 comboQuantidade = ttk.Combobox(master, width=30, textvariable=(campoSelect))
 comboQuantidade.place(x=15, y=348)
 comboQuantidade['values'] = " "
-
+"""
 
 #Label Valor Total
 lblValorTotal = Label(master,text= "Valor Total: ",font = "Calibri, 11",).place(x=290, y=328)
-#Valor Total
-txtValorTotal = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
-txtValorTotal.place(width=205, height=75, x=290, y=348)
-#combo Quantidada
-campoSelect = TK.StringVar()
-comboQuantidade = ttk.Combobox(master, width=30, textvariable=(campoSelect))
-comboQuantidade.place(x=15, y=348)
-comboQuantidade['values'] = " "
 
+#Valor Total
+lblResult = Label(master,text= "R$ 0:00 ",font = "Calibri, 30",).place(x=290, y=348)
+#lblResult.configure(text="R$ 0:00", text_color="green")
+
+
+#Spinbox
+valorSelecionado = tkinter.StringVar(value=1)
+spinBox = ttk.Spinbox(master, from_=1,to=20,width=20, textvariable= valorSelecionado, wrap= True).place(x=15, y=348)
 
 
 #Label Forma de Pagamento
