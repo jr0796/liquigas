@@ -15,8 +15,8 @@ master.title("..:: Cadastro de Funcionários::..")
 master.geometry("1100x750+100+0") #Largura x Altura + dist. Esquerda + dist. direita
 
 #Top (data, hora, frase de boas vindas e destaques)###############
-destaques = LabelFrame(master, text="Destaques", width= 1080, height=120)
-destaques.place(x=1, y=1)
+destaques = LabelFrame(master,  width= 1080, height=120)
+destaques.place(x=10, y=1)
 
 #Venda
 lblVenda = Label(destaques,text= "Nº. Venda: ",font = "Calibri, 11",).place(x=1, y=1)
@@ -37,15 +37,15 @@ lblrelogio = Label(destaques,text= "10:00 - Bom dia  - Usuário: Junior",font = 
 
 
 #Dados do cliente#################
-dadosCliente = LabelFrame(master, text="Consulta de Clientes ", width= 1080, height=296)
-dadosCliente.place(x=1, y=130)
+dadosCliente = LabelFrame(master, width= 1080, height=296)
+dadosCliente.place(x=10, y=130)
 #TelVEndedor
-lblTelVendedor = Label(dadosCliente,text= "Telefone Cliente: ",font = "Calibri, 11",).place(x=1, y=1)
+lblTelVendedor = Label(dadosCliente,text= "Telefone: ",font = "Calibri, 11",).place(x=1, y=1)
 #txt Tel do Cliente
 txtTelCliente = Entry(dadosCliente, bd=2, font=("Calibri, 12"), justify=LEFT)
 txtTelCliente.place(width=200, height=20, x=1, y=25)
 #botão Pesquisar Fone
-btnPesquisarFone = Button(dadosCliente, text='Consultar',font=("Calibri, 11"), command="")
+btnPesquisarFone = Button(dadosCliente, text='Busc',font=("Calibri, 11"), command="")
 btnPesquisarFone.pack(side ='top')
 btnPesquisarFone.place(width=45, height=35, x=220, y=20)
 #Nome do Cliente
@@ -69,26 +69,25 @@ lblObservacoes = Label(dadosCliente,text= "Observações: ",font = "Calibri, 11"
 txtobservacoes= Entry(dadosCliente, bd=2, font=("Calibri, 12"), justify=LEFT)
 txtobservacoes.place(width=430, height=79, x=1, y=190)
 #TreeVew REsultado da consulta
-tv = ttk.Treeview(dadosCliente, selectmode="browse",column=("Telefone","Nome","Endereco","Bairro","Observacoes"),
+tv = ttk.Treeview(dadosCliente, selectmode="browse",column=("Telefone","Nome","Endereco","Bairro"),
                   show='headings',height=11)
-tv.column("Telefone", width=50, minwidth=0, stretch=NO)
+tv.column("Telefone", width=130, minwidth=0, stretch=NO)
 tv.heading("#1", text='Telefone')
-tv.column("Nome", minwidth=0,width=250,stretch=NO)
+tv.column("Nome", minwidth=0,width=200,stretch=NO)
 tv.heading("#2", text='Nome')
-tv.column("Endereco", minwidth=0,width=100,stretch=NO)
+tv.column("Endereco", minwidth=0,width=150,stretch=NO)
 tv.heading("#3", text='Endereço')
-tv.column("Bairro", minwidth=0,width=100,stretch=NO)
+tv.column("Bairro", minwidth=0,width=120,stretch=NO)
 tv.heading("#4", text='Bairro')
-tv.column("Observacoes", minwidth=0,width=100,stretch=NO)
-tv.heading("#5", text='Observações')
+
 tv.place(x=440,y=22)
 
 
 
 
 #Dados Produto########################
-produtos = LabelFrame(master, text="Informações dos Produtos ", width= 1080, height=140)
-produtos.place(x=1, y=420)
+produtos = LabelFrame(master, width= 1080, height=140)
+produtos.place(x=10, y=430)
 #Nome Produto
 lblNomeProduto = Label(produtos,text= "Nome do Produto: ",font = "Calibri, 11",).place(x=1, y=1)
 #Combo Produtos
@@ -135,8 +134,8 @@ lblsubTotalItem = Label(produtos,text= "R$: 30,00 ",font = "Calibri, 15",).place
 
 
 #Valores#######################
-valores = LabelFrame(master, text="Valores da Venda", width= 500, height=120)
-valores.place(x=1,y=565)
+valores = LabelFrame(master, width= 500, height=120)
+valores.place(x=10,y=575)
 
 #Label Total
 lblTotal = Label(valores,text= "Total: ",font = "Calibri, 11",).place(x=1, y=1)
@@ -152,29 +151,29 @@ lblTroco = Label(valores,text= "Troco: ",font = "Calibri, 11",).place(x=390, y=1
 lblResulTroco= Label(valores,text= "R$ 100,00 ",font = "Calibri, 15",).place(x=390, y=20)
 #Combo Forma de pagamento
 campoSelect = TK.StringVar()
-comboFormaPgto = ttk.Combobox(valores, width=62, textvariable=(campoSelect))
-comboFormaPgto.place(x=1, y=50)
+comboFormaPgto = ttk.Combobox(valores, width=32, textvariable=(campoSelect))
+comboFormaPgto.place(x=1, y=65)
 comboFormaPgto['values'] = " "
 #Radio Entraga
 #radioselected = Tk.StringVar()
 radio1 = ttk.Radiobutton(valores,text="Com entrega", value="Value1")
-radio1.place(x=300, y=80)
+radio1.place(x=300, y=65)
 radio2 = ttk.Radiobutton(valores,text="Sem entrega", value="Value2")
-radio2.place(x=400, y=80)
+radio2.place(x=400, y=65)
 
 
 #botão Confirmar
 btnConfirmar = Button(master, text='Confirmar',font=("Calibri, 12"), command=" ")
 btnConfirmar.pack(side ='top')
-btnConfirmar.place(width=160, height=45, x=900, y=565)
+btnConfirmar.place(width=160, height=105, x=520, y=575)
 #botão Cancelar
 btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command="cancelarSair")
 btnCancelar.pack(side ='top')
-btnCancelar.place(width=160, height=45, x=750, y=565)
+btnCancelar.place(width=160, height=65, x=720, y=585)
 #botão Limpar
 btnLimpar = Button(master, text='Cancelar', font=("Calibri, 12"), command="cancelarSair")
 btnLimpar.pack(side ='top')
-btnLimpar.place(width=160, height=45, x=620, y=565)
+btnLimpar.place(width=160, height=65, x=885, y=585)
 
 
 master.mainloop()
