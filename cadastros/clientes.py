@@ -1,9 +1,23 @@
+import re
 import requests
+import pyodbc
 import tkinter
 from tkinter import *
 from tkinter import messagebox
+
+
 from PIL import ImageTk, Image
 from tkinter.filedialog import askopenfilename
+
+
+#Conexão com banco SQL
+conexao = pyodbc.connect('Driver={SQL Server};Server=DESKTOP-T3K0RN5;PORT=1433;Database=bdLiquigas;Trusted_connection = yes')
+print("Conexão bem sucedida!!")
+
+cursor = conexao.cursor()
+
+
+
 
 
 #Construção da Janela
@@ -33,10 +47,111 @@ def buscador(event):
     #Vídeo com exemplo do uso de eventos
     #documentação com os principais eventos: https://python-course.eu/tkinter/events-and-binds-in-tkinter.php
 
+def limparCampos():
+    txtRg.delete(0, "end")
+    txtNome.delete(0, "end")
+    txtCpf.delete(0, "end")
+    txtRua.delete(0, "end")
+    txtCep.delete(0, "end")
+    txtCidade.delete(0, "end")
+    txtBairro.delete(0, "end")
+    txtnumero.delete(0, "end")
+    txtEstado.delete(0, "end")
+    txtComplemento.delete(0, "end")
+    txtTelefone.delete(0, "end")
+
 def cancelarSair():
     resp = messagebox.askyesno("Cancelar e sair", 'Deseja realmente sair?')
     if resp == True:
         master.destroy()
+
+def cadastrarCli():
+    nomeCli = txtNome.get()
+    rgCli = txtRg.get()
+    cpfCli = txtCpf.get()
+    cepCli =txtCep.get()
+    ufCli = txtEstado.get()
+    logrCli = txtRua.get()
+    numLogrCli = txtnumero.get()
+    bairroCli = txtBairro.get()
+    cidadeCli = txtCidade.get()
+    compCLi = txtComplemento.get()
+
+    foneCli = txtCaixaTelefones.get("1.0","end").splitlines()
+
+
+    limparCampos()
+    messagebox.showinfo("Cadastro", "Dados cadastrados com Sucesso!")
+
+
+#instruções SQL
+    commando = f""" INSERT INTO tbCliente(nomeCliente,rgCliente,cpfCliente,cepCliente,ufCliente,
+    logrCliente,numLogrCliente,bairroCliente,cidadeCliente,compCliente)
+    VALUES ('{nomeCli}','{rgCli}','{cpfCli}','{cepCli}','{ufCli}','{logrCli}','{numLogrCli}','{bairroCli}','{cidadeCli}'
+    ,'{compCLi}')"""
+    # executando:
+    cursor.execute(commando)
+    cursor.commit()
+
+
+    commando = f"SELECT codCliente FROM tbCliente WHERE nomeCliente = '{nomeCli}' "
+    #executando:
+    cursor.execute(commando)
+    result = cursor.fetchall()[0]
+    result2 = result
+
+
+    for i, item in enumerate(foneCli):
+        commando = f"""INSERT INTO tbTelCliente(numTelCliente, codCliente) VALUES ({item},{result2[0]})"""
+        cursor.execute(commando)
+        cursor.commit()
+        print(item)
+
+
+
+
+def maisFone():
+
+    num_linhas = int(txtCaixaTelefones.index('end-1c').split('.')[0])
+
+    if num_linhas < 5:
+        txtCaixaTelefones.configure(state="normal")
+
+        txtCaixaTelefones.insert('end', f'{txtTelefone.get()}\n')
+        txtCaixaTelefones.configure(state="disabled")
+
+        txtTelefone.focus_set()
+    else:
+        txtTelefone.delete(0, "end")
+        txtCaixaTelefones.focus_set()
+        messagebox.showinfo("Atenção", "TOtal de telefones ultrapassdo!")
+
+
+def menosFone():
+    selecao = txtCaixaTelefones.tag_ranges("sel") #identificando linha selcionada
+    txtCaixaTelefones.configure(state="normal") #habilidanto lista
+    i = txtCaixaTelefones.index(selecao[0]) # índice do parametro "sel"
+    ii =txtCaixaTelefones.index(selecao[1]) # índice do parametro "se"
+    linha_selecionada = int(i.split(".")[0])-1 #recuperando índice
+    linhas = txtCaixaTelefones.get("1.0", "end").splitlines() #contando linhas
+    linhas.pop(linha_selecionada) #apagando linha selecionada
+    novaLista = "\n".join(linhas) #removendo linhas em branco, juntando lista novamente
+    txtCaixaTelefones.delete("1.0","end") #Limpando caixa
+    txtCaixaTelefones.insert(END, novaLista) #recarregando a nova lista
+    #desabilitando edição da lista
+    txtCaixaTelefones.configure(state="disable")  # habilidanto lista
+
+def textNumerico(text):
+
+    if text.isdigit() and len(text) < 12:
+        return True
+    else:
+        return False
+    #return text.isnumeric()
+numeriCmd = master.register(textNumerico)
+
+
+
 
 
 
@@ -89,25 +204,27 @@ txtComplemento.place(width=205, height=25, x=15, y=338)
 
 
 #Telefone
-txtTelefone = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtTelefone = Entry(master, bd=2, font=("Calibri, 12"), validate="key", justify=LEFT)
 txtTelefone.place(width=205, height=25, x=15, y=398)
-#Caixa dos Telefones
-txtCaixaTelefones = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtTelefone.configure(validatecommand=(numeriCmd, '%P'))
+
+#Caixa de texto para os telefones
+txtCaixaTelefones = Text(master, bd=2, font=("Calibri, 12"),state="disable")
 txtCaixaTelefones.place(width=205, height=75, x=15, y=438)
 
 
 #botão Add Fone
-btnAddFone = Button(master, text='+',font=("Calibri, 15"), command="")
+btnAddFone = Button(master, text='+', font=("Calibri, 15"), command= maisFone)
 btnAddFone.pack(side ='top')
 btnAddFone.place(width=35, height=35, x=230, y=440)
-#botão RM Fone
-btnRmFone = Button(master, text='-',font=("Calibri, 15"), command="")
+#botão RM Fone'
+btnRmFone = Button(master, text='-',font=("Calibri, 15"), command=menosFone)
 btnRmFone.pack(side ='top')
 btnRmFone.place(width=35, height=35, x=230, y=480)
 
 
 #botão Confirmar
-btnConfirmar = Button(master, text='Confirmar',font=("Calibri, 12"), command=" ")
+btnConfirmar = Button(master, text='Confirmar',font=("Calibri, 12"), command=cadastrarCli)
 btnConfirmar.pack(side ='top')
 btnConfirmar.place(width=160, height=45, x=300, y=545)
 
