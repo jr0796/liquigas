@@ -1,3 +1,5 @@
+
+
 import pyodbc
 import requests
 import tkinter
@@ -5,9 +7,11 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 from PIL import ImageTk, Image
-
-#from tkinter.filedialog import askopenfilename
 from tkcalendar import DateEntry
+from  datetime import date
+
+
+
 
 #Conexão com banco SQL
 conexao = pyodbc.connect('Driver={SQL Server};Server=DESKTOP-T3K0RN5;PORT=1433;Database=bdLiquigas;Trusted_connection = yes')
@@ -22,7 +26,7 @@ master.title("..:: Cadastro de Funcionários::..")
 master.geometry("480x600+400+0") #Largura x Altura + dist. Esquerda + dist. direita
 
 fotodoFunc = ("C:/Users/anton/Pictures/avatar.png")
-arquivoFunc = ""
+
 
 
 def buscador(event):
@@ -68,9 +72,16 @@ def addFoto():
 
 def limparCampo():
     txtNome.delete(0, "end")
+
+    txtRg.configure(validatecommand=(validRg, '%S'))
     txtRg.delete(0, "end")
+
+    txtCpf.configure(validatecommand=(validCpf, '%S'))
     txtCpf.delete(0, "end")
+
+    txtCep.configure(validatecommand=(validCep, '%S'))
     txtCep.delete(0, "end")
+
     txtEstado.delete(0, "end")
     txtRua.delete(0, "end")
     txtnumero.delete(0, "end")
@@ -79,7 +90,24 @@ def limparCampo():
     txtComplemento.delete(0, "end")
     txtNome.focus_set()
 
+    txtRg.configure(validatecommand=(validRg, '%P'))
+    txtCpf.configure(validatecommand=(validCpf, '%P'))
+    txtCep.configure(validatecommand=(validCep, '%P'))
 
+
+    #caminhoImagem = ("C:/Users/anton/Pictures/avatar.png")
+    imagine = Image.open("C:/Users/anton/Pictures/avatar.png")
+    fotolimpa = ImageTk.PhotoImage(imagine)
+    lblFoto = Label(master, image=fotolimpa, width=110, height=115).place(x=345, y=372)
+    #lblFoto = Label(master, image=fotodoFunc, width=110, height=115).place(x=345, y=372)
+
+    #dataAgora = datetime.datetime.now().date()
+    hoje = date.today()
+    #dtaContratacao.configure(day=dataAgora.day,month=dataAgora.month,year=dataAgora.year)
+    dtaContratacao.set_date(hoje)
+
+    txtCaixaTelefones.configure(state="normal")  # habilidanto lista
+    txtCaixaTelefones.delete("1.0", "end")  # Limpando caixa
 
 def cadastroFunc():
     nomefunc = txtNome.get()
@@ -94,22 +122,18 @@ def cadastroFunc():
     compleFunc = txtComplemento.get()
     paisFunc = ("Brasil")
 
-    foneFunc = txtTelefone.get()
-    #listaFone = txtCaixaTelefones.get("1.0","end").splitlines()
+    #foneFunc = txtTelefone.get()
+    foneFunc = txtCaixaTelefones.get("1.0","end").splitlines()
 
     dataContratacao = dtaContratacao.get()
     fotoFunc = pyodbc.Binary(arquivoFunc)
 
 
-    #limparCampos()
-    messagebox.showinfo("Cadastro", "Dados cadastrados com sucesso.")
-    txtNome.focus_set()
-    print (fotoFunc)
-    print(dataContratacao)
-    limparCampo()
 
 
-#instrução SQL
+
+
+    #instrução SQL
     command = f"""INSERT INTO tbFuncionario(nomeFunc, rgFunc,cpfFunc, logrFunc, numLogrFunc,cepFunc,bairroFunc, 
             cidadeFunc, ufFunc,compFunc,paisFunc,dataContratacao, fotoFunc)
             SELECT '{nomefunc}','{rgFunc}','{cpfFunc}','{logrFunc}','{numLogrFunc}','{cepFunc}','{bairroFunc}','{cidadeFunc}',
@@ -119,26 +143,115 @@ def cadastroFunc():
     cursor.execute(command)
     cursor.commit()
 
+    commando = f"SELECT codFunc FROM tbFuncionario WHERE nomeFunc = '{nomefunc}' "
+    # executando:
+    cursor.execute(commando)
+    result = cursor.fetchall()[0]
+    result2 = result
+
+    for i, item in enumerate(foneFunc):
+        if item == "":
+            print()
+        else:
+            commando = f"""INSERT INTO tbTelFuncinoario(numTelFunc, codFunc) VALUES ('{item}' , {result2[0]})"""
+            cursor.execute(commando)
+            cursor.commit()
+            print(item)
+
+
+    # limparCampos()
+    messagebox.showinfo("Cadastro", "Dados cadastrados com sucesso.")
+    txtNome.focus_set()
+    print(fotoFunc)
+    print(dataContratacao)
+    limparCampo()
+
+def maisFone():
+    num_linhas = int(txtCaixaTelefones.index('end-1c').split('.')[0])
+
+    if num_linhas < 5:
+        txtCaixaTelefones.configure(state="normal")
+        txtCaixaTelefones.insert('end', f'{txtTelefone.get()}\n')
+        txtCaixaTelefones.configure(state="disabled")
+        txtTelefone.focus_set()
+    else:
+        txtTelefone.delete(0, "end")
+        txtCaixaTelefones.focus_set()
+        messagebox.showinfo("Atenção", "Você atingiu o número máximo de telefones cadastrados!")
+
+    txtTelefone.configure(validatecommand=(validTel, "%S"))
+    txtTelefone.delete(0, END)
+    txtTelefone.focus_set()
+    txtTelefone.configure(validatecommand=(validTel, "%P"))
+def menosFone():
+    selecao = txtCaixaTelefones.tag_ranges("sel")  # identificando linha selcionada
+    txtCaixaTelefones.configure(state="normal")  # habilidanto lista
+    i = txtCaixaTelefones.index(selecao[0])  # índice do parametro "sel"
+    ii = txtCaixaTelefones.index(selecao[1])  # índice do parametro "se"
+    linha_selecionada = int(i.split(".")[0]) - 1  # recuperando índice
+    linhas = txtCaixaTelefones.get("1.0", "end").splitlines()  # contando linhas
+    linhas.pop(linha_selecionada)  # apagando linha selecionada
+    novaLista = "".join(linhas)  # removendo linhas em branco, juntando lista novamente
+    txtCaixaTelefones.delete("1.0", "end")  # Limpando caixa
+    txtCaixaTelefones.insert(END, novaLista)  # recarregando a nova lista
+    # desabilitando edição da lista
+    txtCaixaTelefones.configure(state="disable")  # habilidanto lista
+
+
+#Validações
+#===========================
+
+def limiteTel(text):
+    if text.isdigit() and len(text) < 12:
+        return True
+    else:
+        return False
+validTel = master.register(limiteTel)
+
+def limiteRg(text):
+    if text.isdigit() and len(text) < 10:
+        return True
+    else:
+        return False
+validRg = master.register(limiteRg)
+
+def limiteCpf(text):
+    if text.isdigit() and len(text) < 12:
+        return True
+    else:
+        return False
+validCpf = master.register(limiteCpf)
+
+def limitCep(text):
+    if text.isdigit() and len(text) < 9:
+        return True
+    else:
+        return False
+validCep = master.register(limitCep)
+
+
 
 #Nome
 txtNome = Entry(master, bd=2, font=("Calibri, "), justify=LEFT)
 txtNome.place(width=440, height=25, x=15, y=38)
 
 #RG
-txtRg = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtRg = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT, validate="key")
 txtRg.place(width=205, height=25, x=15, y=88)
+txtRg.configure(validatecommand=(validRg, '%P'))
 
 #CPF
-txtCpf = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtCpf = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT, validate="key")
 txtCpf.place(width=205, height=25, x=250, y=88)
+txtCpf.configure(validatecommand=(validCpf, '%P'))
 
 #CEP
-txtCep = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtCep = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT, validate="key")
 txtCep.place(width=205, height=25, x=15, y=158)
 txtCep.bind("<FocusOut>", buscador)
+txtCep.configure(validatecommand=(validCep, '%P'))
 
 #estado
-
 estado = tkinter.StringVar()
 txtEstado = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT,textvariable=estado)
 txtEstado.place(width=205, height=25, x=250, y=158)
@@ -169,10 +282,12 @@ txtComplemento.place(width=205, height=25, x=15, y=338)
 
 
 #Telefone
-txtTelefone = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtTelefone = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT, validate="key")
 txtTelefone.place(width=205, height=25, x=15, y=398)
+txtTelefone.configure(validatecommand=(validTel, '%P'))
+
 #Caixa dos Telefones
-txtCaixaTelefones = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtCaixaTelefones = Text(master, bd=2, font=("Calibri, 12"), state="disable")
 txtCaixaTelefones.place(width=205, height=75, x=15, y=438)
 
 #Data de contrataçõa
@@ -193,11 +308,11 @@ btnAddFoto.place(width=110, height=25, x=345, y=490)
 
 
 #botão Add Fone
-btnAddFone = Button(master, text='+',font=("Calibri, 15"), command="")
+btnAddFone = Button(master, text='+',font=("Calibri, 15"), command=maisFone)
 btnAddFone.pack(side ='top')
 btnAddFone.place(width=35, height=35, x=230, y=440)
 #botão RM Fone
-btnRmFone = Button(master, text='-',font=("Calibri, 15"), command="")
+btnRmFone = Button(master, text='-',font=("Calibri, 15"), command=menosFone)
 btnRmFone.pack(side ='top')
 btnRmFone.place(width=35, height=35, x=230, y=480)
 
