@@ -1,5 +1,4 @@
 
-
 import pyodbc
 import requests
 import tkinter
@@ -95,15 +94,12 @@ def limparCampo():
     txtCep.configure(validatecommand=(validCep, '%P'))
 
 
-    #caminhoImagem = ("C:/Users/anton/Pictures/avatar.png")
+
     imagine = Image.open("C:/Users/anton/Pictures/avatar.png")
     fotolimpa = ImageTk.PhotoImage(imagine)
     lblFoto = Label(master, image=fotolimpa, width=110, height=115).place(x=345, y=372)
-    #lblFoto = Label(master, image=fotodoFunc, width=110, height=115).place(x=345, y=372)
 
-    #dataAgora = datetime.datetime.now().date()
     hoje = date.today()
-    #dtaContratacao.configure(day=dataAgora.day,month=dataAgora.month,year=dataAgora.year)
     dtaContratacao.set_date(hoje)
 
     txtCaixaTelefones.configure(state="normal")  # habilidanto lista
@@ -122,16 +118,10 @@ def cadastroFunc():
     compleFunc = txtComplemento.get()
     paisFunc = ("Brasil")
 
-    #foneFunc = txtTelefone.get()
     foneFunc = txtCaixaTelefones.get("1.0","end").splitlines()
 
     dataContratacao = dtaContratacao.get()
     fotoFunc = pyodbc.Binary(arquivoFunc)
-
-
-
-
-
 
     #instrução SQL
     command = f"""INSERT INTO tbFuncionario(nomeFunc, rgFunc,cpfFunc, logrFunc, numLogrFunc,cepFunc,bairroFunc, 
@@ -156,14 +146,12 @@ def cadastroFunc():
             commando = f"""INSERT INTO tbTelFuncinoario(numTelFunc, codFunc) VALUES ('{item}' , {result2[0]})"""
             cursor.execute(commando)
             cursor.commit()
-            print(item)
+
 
 
     # limparCampos()
     messagebox.showinfo("Cadastro", "Dados cadastrados com sucesso.")
     txtNome.focus_set()
-    print(fotoFunc)
-    print(dataContratacao)
     limparCampo()
 
 def maisFone():

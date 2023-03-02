@@ -1,7 +1,15 @@
+import pyodbc
 import tkinter
 import requests
 from tkinter import *
 from tkinter import messagebox
+
+
+#Conexão com banco SQL
+conexao = pyodbc.connect('Driver={SQL Server};Server=DESKTOP-T3K0RN5;PORT=1433;Database=bdLiquigas;Trusted_connection = yes')
+print("Conexão bem sucedida!!")
+cursor = conexao.cursor()
+
 
 
 #Construção da Janela
@@ -11,27 +19,157 @@ master.title("..:: Cadastro de Fornecedores::..")
 master.geometry("480x600+400+50") #Largura x Altura + dist. Esquerda + dist. do topo
 
 def buscador(event):
-    # cep = '08490000'
-    cep = txtCep.get()
-    link = f"http://viacep.com.br/ws/{cep}/json/"
-    requisicao = requests.get(link)
-    dicRequisicao = requisicao.json()
+    try:
+        # cep = '08490000'
+        cep = txtCep.get()
+        link = f"http://viacep.com.br/ws/{cep}/json/"
+        requisicao = requests.get(link)
+        dicRequisicao = requisicao.json()
 
-    estadobuscador = dicRequisicao['uf']
-    logradourobuscador = dicRequisicao['logradouro']
-    bairrobuscador = dicRequisicao['bairro']
-    cidadebuscador = dicRequisicao['localidade']
+        estadobuscador = dicRequisicao['uf']
+        logradourobuscador = dicRequisicao['logradouro']
+        bairrobuscador = dicRequisicao['bairro']
+        cidadebuscador = dicRequisicao['localidade']
 
-    estado.set(estadobuscador)
-    rua.set(logradourobuscador)
-    bairro.set(bairrobuscador)
-    cidade.set(cidadebuscador)
-    txtnumero.focus_set()
+        estado.set(estadobuscador)
+        rua.set(logradourobuscador)
+        bairro.set(bairrobuscador)
+        cidade.set(cidadebuscador)
+        txtnumero.focus_set()
+    except:
+        messagebox.showinfo("Erro!", "Verifique a conexão com a internet \n ou digite um CEP válido.")
+
+
 
 def cancelarSair():
     resp = messagebox.askyesno("Cancelar e sair", 'Deseja realmente sair?')
     if resp == True:
         master.destroy()
+
+def limparCampos():
+    txtCnpj.configure(validatecommand=(validCnpj, '%S'))
+    txtCnpj.delete(0, "end")
+
+    txtCep.configure(validatecommand=(validCep, '%S'))
+
+    txtCep.delete(0, "end")
+
+    txtNome.delete(0, "end")
+    txtRua.delete(0,"end")
+    txtnumero.delete(0,"end")
+    txtContato.delete(0,"end")
+    txtComplemento.delete(0,"end")
+    txtEstado.delete(0,"end")
+    txtBairro.delete(0, "end")
+    txtCidade.delete(0, "end")
+
+    txtCnpj.configure(validatecommand=(validCnpj, '%P'))
+    txtCep.configure(validatecommand=(validCep, '%P'))
+    txtTelefone.configure(validatecommand=(validTel, '%P'))
+
+    txtCaixaTelefones.configure(state="normal")  # habilidanto lista
+    txtCaixaTelefones.delete("1.0", "end")  # Limpando caixa
+
+
+def cadastrar():
+    nomeForn = txtNome.get()
+    cnpjForn = txtCnpj.get()
+    logrForn = txtRua.get()
+    contatoForn = txtContato.get() #Precisa ser adicionado ao banco de dados.
+    numLogrForn = txtnumero.get()
+    cepForn = txtCep.get()
+    bairroForn = txtBairro.get()
+    cidadeForn = cidade.get()
+    ufForn = txtEstado.get()
+    paisForn = ("Brasil")
+    compForn = txtComplemento.get()
+
+    foneForn = txtCaixaTelefones.get("1.0", "end").splitlines()
+
+    # instrução SQL
+    command = f"""INSERT INTO tbFornecedor(nomeForn, cnpjForn, logrForn, numlogForn, cepForn,bairroForn, cidadeForn,
+     ufForn, paisForn, compForn)
+            VALUES('{nomeForn}','{cnpjForn}','{logrForn}','{numLogrForn}','{cepForn}','{bairroForn}','{cidadeForn}',
+     '{ufForn}','{paisForn}','{compForn}')"""
+    cursor.execute(command)
+    cursor.commit()
+
+    commando = f"SELECT codFornecedor FROM tbFornecedor WHERE nomeForn = '{nomeForn}' "
+    # executando:
+    cursor.execute(commando)
+    result = cursor.fetchall()[0]
+    result2 = result
+
+    for i, item in enumerate(foneForn):
+        if item == "":
+            print()
+        else:
+            commando = f"""INSERT INTO tbTelFornecedor(numTelForn, codFornecedor) VALUES ('{item}' , {result2[0]})"""
+            cursor.execute(commando)
+            cursor.commit()
+
+    messagebox.showinfo("Cadastro", "Dados cadastrados com sucesso.")
+    txtNome.focus_set()
+    limparCampos()
+
+def maisFone():
+    num_linhas = int(txtCaixaTelefones.index('end-1c').split('.')[0])
+
+    if num_linhas < 5:
+        txtCaixaTelefones.configure(state="normal")
+        txtCaixaTelefones.insert('end', f'{txtTelefone.get()}\n')
+        txtCaixaTelefones.configure(state="disabled")
+        txtTelefone.focus_set()
+    else:
+        txtTelefone.delete(0, "end")
+        txtCaixaTelefones.focus_set()
+        messagebox.showinfo("Atenção", "Você atingiu o número máximo de telefones cadastrados!")
+
+    txtTelefone.configure(validatecommand=(validTel, "%S"))
+    txtTelefone.delete(0, END)
+    txtTelefone.focus_set()
+    txtTelefone.configure(validatecommand=(validTel, "%P"))
+
+def menosFone():
+    selecao = txtCaixaTelefones.tag_ranges("sel")  # identificando linha selcionada
+    txtCaixaTelefones.configure(state="normal")  # habilidanto lista
+    i = txtCaixaTelefones.index(selecao[0])  # índice do parametro "sel"
+    ii = txtCaixaTelefones.index(selecao[1])  # índice do parametro "se"
+    linha_selecionada = int(i.split(".")[0]) - 1  # recuperando índice
+    linhas = txtCaixaTelefones.get("1.0", "end").splitlines()  # contando linhas
+    linhas.pop(linha_selecionada)  # apagando linha selecionada
+    novaLista = "".join(linhas)  # removendo linhas em branco, juntando lista novamente
+    txtCaixaTelefones.delete("1.0", "end")  # Limpando caixa
+    txtCaixaTelefones.insert(END, novaLista)  # recarregando a nova lista
+    # desabilitando edição da lista
+    txtCaixaTelefones.configure(state="disable")  # habilidanto lista
+
+
+# Validações
+#=====================================
+def limiteTel(text):
+    if text.isdigit() and len(text) < 12:
+        return True
+    else:
+        return False
+validTel = master.register(limiteTel)
+
+def limiteCnpj(text):
+    #12.345.678/0001-00
+    if text.isdigit() and len(text) < 15:
+        return True
+    else:
+        return False
+validCnpj = master.register(limiteCnpj)
+
+def limitCep(text):
+    if text.isdigit() and len(text) < 9:
+        return True
+    else:
+        return False
+validCep = master.register(limitCep)
+
+
 
 
 #Nome
@@ -39,8 +177,9 @@ txtNome = Entry(master, bd=2, font=("Calibri, "), justify=LEFT)
 txtNome.place(width=440, height=25, x=15, y=38)
 
 #Cnpj
-txtCnpj = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtCnpj = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT, validate='key')
 txtCnpj.place(width=205, height=25, x=15, y=88)
+txtCnpj.configure(validatecommand=(validCnpj, '%P'))
 
 #Contado da empresa - Nome de alguma pessoa para contato.
 txtContato = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
@@ -50,9 +189,9 @@ txtContato.place(width=205, height=25, x=250, y=88)
 txtCep = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
 txtCep.place(width=205, height=25, x=15, y=158)
 txtCep.bind("<FocusOut>", buscador)
+txtCep.configure(validatecommand=(validCep, '%P'))
 
 #estado
-
 estado = tkinter.StringVar()
 txtEstado = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT,textvariable=estado)
 txtEstado.place(width=205, height=25, x=250, y=158)
@@ -83,32 +222,34 @@ txtComplemento.place(width=205, height=25, x=15, y=338)
 
 
 #Telefone
-txtTelefone = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtTelefone = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT, validate='key')
 txtTelefone.place(width=205, height=25, x=15, y=398)
+txtTelefone.configure(validatecommand=(validTel, '%P'))
+
 #Caixa dos Telefones
-txtCaixaTelefones = Entry(master, bd=2, font=("Calibri, 12"), justify=LEFT)
+txtCaixaTelefones = Text(master, bd=2, font=("Calibri, 12"))
 txtCaixaTelefones.place(width=205, height=75, x=15, y=438)
 
 
 
 
 #botão Add Fone
-btnAddFone = Button(master, text='+',font=("Calibri, 15"), command="")
+btnAddFone = Button(master, text='+',font=("Calibri, 15"), command=maisFone)
 btnAddFone.pack(side ='top')
 btnAddFone.place(width=35, height=35, x=230, y=440)
 #botão RM Fone
-btnRmFone = Button(master, text='-',font=("Calibri, 15"), command="")
+btnRmFone = Button(master, text='-',font=("Calibri, 15"), command=menosFone)
 btnRmFone.pack(side ='top')
 btnRmFone.place(width=35, height=35, x=230, y=480)
 
 
 #botão Confirmar
-btnConfirmar = Button(master, text='Confirmar',font=("Calibri, 12"), command=" ")
+btnConfirmar = Button(master, text='Confirmar',font=("Calibri, 12"), command=cadastrar)
 btnConfirmar.pack(side ='top')
 btnConfirmar.place(width=160, height=45, x=300, y=545)
 
 #botão Cancelar
-btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command="cancelarSair")
+btnCancelar = Button(master, text='Cancelar', font=("Calibri, 12"), command= cancelarSair)
 btnCancelar.pack(side ='top')
 btnCancelar.place(width=160, height=45, x=130, y=545)
 
