@@ -8,16 +8,20 @@ from tkinter import messagebox
 #Conexão com banco SQL
 
 
-conexao = pyodbc.connect('Driver={SQL Server};Server=DESKTOP-T3K0RN5;PORT=1433;Database=bdLiquigas;Trusted_connection = yes')
-print("Conexão bem sucedida!!")
-cursor = conexao.cursor()
+#conexao = pyodbc.connect('Driver={SQL Server};Server=DESKTOP-T3K0RN5;PORT=1433;Database=bdLiquigas;Trusted_connection = yes')
+#print("Conexão bem sucedida!!")
+#cursor = conexao.cursor()
 
 
 #Construção da Janela
 master = Tk()
 master.title("..:: Cadastro de Fabricantes::..")
+master.focus_set()
+master.grab_set()
 #master.iconbitmap(default=" ")
 master.geometry("480x600+400+50") #Largura x Altura + dist. Esquerda + dist. do topo
+
+
 
 def buscador(event):
     try:

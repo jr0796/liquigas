@@ -6,9 +6,9 @@ from tkinter import messagebox
 
 
 #Conexão com banco SQL
-conexao = pyodbc.connect('Driver={SQL Server};Server=DESKTOP-T3K0RN5;PORT=1433;Database=bdLiquigas;Trusted_connection = yes')
-print("Conexão bem sucedida!!")
-cursor = conexao.cursor()
+#conexao = pyodbc.connect('Driver={SQL Server};Server=DESKTOP-T3K0RN5;PORT=1433;Database=bdLiquigas;Trusted_connection = yes')
+#print("Conexão bem sucedida!!")
+#cursor = conexao.cursor()
 
 
 
